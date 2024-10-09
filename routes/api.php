@@ -15,11 +15,11 @@ Route::post('/auth/register', [AuthController::class, 'register'])->name('regist
 Route::delete('/auth/lagout', [AuthController::class, 'lagout'])->name('lagout');
 
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/posts', [PostController::class, 'index'])->name('get.posts');
     Route::post('/posts', [PostController::class, 'store'])->name('store.post');
-    Route::get('/posts/{id}', [PostController::class, 'showById'])->name('show.post.id');
-    Route::get('/posts/{slug}', [PostController::class, 'showBySlug'])->name('show.post.slug');
+    Route::get('/posts/{idOrSlug}', [PostController::class, 'show'])->name('show.post');
+    // Route::get('/posts/{slug}', [PostController::class, 'showBySlug'])->name('show.post.slug');
     Route::put('/posts/{id}', [PostController::class, 'update'])->name('update.post');
     Route::delete('/posts/{id}', [PostController::class, 'destroy'])->name('destroy.post');
 });

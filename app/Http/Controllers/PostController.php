@@ -95,37 +95,20 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      */
-    public function showById($id)
+    public function show($idOrSlug)
     {
-        $post = Post::find($id);
+        $post = Post::where('id', $idOrSlug)->orWhere('slug', $idOrSlug)->first();
 
         if (!$post) {
             return response()->json([
                 'message' => 'Post non trouvé',
-                'data' => $posts,
+                'data' => $post,
             ], 404);
         }
 
         return response()->json([
             'message' => 'OK',
-            'data' => $posts,
-        ], 200);
-    }
-
-    public function showBySlug($slug)
-    {
-        $post = Post::where('slug', $slug)->first();
-
-        if (!$post) {
-            return response()->json([
-                'message' => 'Post non trouvé',
-                'data' => $posts,
-            ], 404);
-        }
-
-        return response()->json([
-            'message' => 'OK',
-            'data' => $posts,
+            'data' => $post,
         ], 200);
     }
 
@@ -136,8 +119,8 @@ class PostController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
-            'content' => 'required|string',
+            'title' => 'nullable|string|max:255',
+            'content' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
@@ -193,7 +176,7 @@ class PostController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Post $post)
+    public function destroy($id)
     {
         $user = Auth::user();
         $post = Post::where('id', $id)->where('user_id', $user->id)->first();

@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Post;
+use App\Models\User;
 use Faker\Factory as Faker;
 use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
@@ -21,7 +22,6 @@ class PostSeeder extends Seeder
         foreach (range(1, 10) as $index) {
             $title = $faker->sentence;
             $slug = Str::slug($title);
-
             $originalSlug = $slug;
             $counter = 1;
             while (Post::where('slug', $slug)->exists()) {
@@ -30,13 +30,16 @@ class PostSeeder extends Seeder
             }
 
             $imagePath = null;
-
             if ($faker->boolean(50)) {
                 $imagePath = 'images/' . Str::random(10) . '.jpg';
                 Storage::put($imagePath, 'fake image content');
             }
 
+            $userId = User::inRandomOrder()->first()->id;
+
+
             DB::table('posts')->insert([
+                'user_id' => $userId,
                 'title' => $title,
                 'slug' => $slug,
                 'content' => $faker->paragraph,
